@@ -1,6 +1,15 @@
 #include <gl\glew.h>
 #include <MeGLWindow.h>
 
+/*
+Assignment #2:
+
+	1. in paintgl -> update and draw
+	2. two triangles one of different solid color use uniforms to do that
+	3. wsad controls one triangle and arrow keys control the others
+
+	The update function must update the position of the triangles based on keyboard input.*/
+
 extern const char* vertexShaderCode;
 extern const char* fragmentShaderCode;
 
@@ -8,50 +17,18 @@ void sendDataToOpenGL()
 {
 	GLfloat verts[] =
 	{
-		//top triangle
-		+0.0f, 1.0f, //0 position
-		//-1.0f, 1.0f,
-		255.0f, 69.0f, 0.0f,
-
-		-0.5f, +0.0f, //1
-		//-0.7f, 1.0f,
-		255.0f, 69.0f, 0.0f,
-
-		0.5f, +0.0f, //2
-		//-1.0f, 0.0f,
-		255.0f, 69.0f, 0.0f,
-
-		//Bottom Left triangle
-		//-0.5f, 0.0f, //1
-		-1.0f, -1.0f, //3
-		//-0.7f, 0.0f,
-		255.0f, 69.0f, 0.0f, //color for each vertex 3
-
-		+0.0f, -1.0f, //4
-		//-0.7f, 0.2f,
-		255.0f, 69.0f, 0.0f, //color for each vertex 4
-
-		//Bottom Right triangle
-		//0.5f, 0.0f, //2
-		1.0f, -1.0f, //5
-		//-0.5f, 0.2f,
-		255.0f, 69.0f, 0.0f, //color for each vertex 5
-
-		+0.0f, -1.0f, //6
-		//-0.5f, 0.0f,
-		255.0f, 69.0f, 0.0f, //color for each vertex 6
-
-		-0.3f, 0.0f, //7
-		255.0f, 223.0f, 0.0f, 
-
-		-0.3f, 1.0f, //8
-		255.0f, 223.0f, 0.0f,
-
-		-0.2f, 0.0f, //9
-		255.0f, 223.0f, 0.0f,
-
-		-0.1f, 1.0f, //10
-		255.0f, 223.0f, 0.0f,
+		0.7f, -0.2f,//trying to do a push
+		1.0f, 0.0f, 0.0f,
+		0.5f, -0.7f,
+		1.0f, 0.0f, 0.0f,
+		0.8f, -0.7f,
+		1.0f, 0.0f, 0.0f,
+		-0.5f, 0.8f,
+		0.0f, 1.0f, 0.0f,
+		-0.4f, 0.4f,
+		0.0f, 1.0f, 0.0f,
+		-0.5f, 0.4f,
+		0.0f, 1.0f, 0.0f,
 	};
 
 	GLuint VertBufferID;
@@ -64,8 +41,7 @@ void sendDataToOpenGL()
 	glEnableVertexAttribArray(1);//color
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (char*)(sizeof(float) * 2));
 
-	GLushort indices[] = { 0,1,2, 1,3,4, 2,5,6 }; //better way to generate multiple triangles with repeating verts (takes the verts locations & make triangle)
-	//GLushort indices[] = { 0,1,2, 2,1,3, 3,4,5, 5,3,6, 7,8,9, 8,9,10}; //better way to generate multiple triangles with repeating verts (takes the verts locations & make triangle)
+	GLushort indices[] = {0,1,2, 3,4,5}; //better way to generate multiple triangles with repeating verts (takes the verts locations & make triangle)
 	GLuint IndexBufferID;
 	glGenBuffers(1, &IndexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
@@ -105,7 +81,5 @@ void MeGLWindow::initializeGL()
 void MeGLWindow::paintGL()
 {
 	glViewport(0, 0, width(), height());
-	//glDrawArrays(GL_TRIANGLES, 0, 3); //draw array info
-	//glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0); //draw indices info 
-	glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_SHORT, 0); //draw indices info 
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0); //draw indices info 
 }
