@@ -29,5 +29,8 @@
     <ClInclude Include="MeGLWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Middleware\glfw\include\glfw3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
