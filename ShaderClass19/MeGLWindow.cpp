@@ -1,5 +1,6 @@
 #include <gl\glew.h>
 #include <MeGLWindow.h>
+#include <glfw3.h>
 
 /*
 Assignment #2:
