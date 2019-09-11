@@ -1,6 +1,5 @@
 #include <gl\glew.h>
 #include <MeGLWindow.h>
-#include <glfw3.h>
 #include <iostream>
 #include <fstream>
 #include <glm.hpp>
@@ -93,8 +92,14 @@ void InstallShaders()
 	GLint Color = glGetUniformLocation(ColorMe, "Color");
 	glUniform3f(Color, 1.0f, 0.0f, 0.0f);
 
-	glm::vec2 Offset;
+	glm::vec2 Triangle1Offset;
 	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
+	glUniform2f(offsetUniformLoc, Triangle1Offset[0], Triangle1Offset[1]);
+
+	if (GetAsyncKeyState(VK_LEFT))
+	{
+		
+	}
 }
 
 void MeGLWindow::initializeGL()
@@ -108,4 +113,12 @@ void MeGLWindow::paintGL()
 {
 	glViewport(0, 0, width(), height());
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0); //draw indices info 
+}
+
+void UpdatePosition()
+{
+	if (GetAsyncKeyState(VK_LEFT))
+	{
+
+	}
 }
