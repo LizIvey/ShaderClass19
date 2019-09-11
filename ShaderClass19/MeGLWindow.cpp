@@ -1,35 +1,37 @@
 #include <gl\glew.h>
 #include <MeGLWindow.h>
 #include <glfw3.h>
+#include <iostream>
+#include <fstream>
+#include <glm.hpp>
+using namespace std;
 
 /*
 Assignment #2:
 
 	1. in paintgl -> update and draw
-	2. two triangles one of different solid color use uniforms to do that
+	2. two triangles one of different solid color use uniforms to do that. 
+		Just paint the ONE triangle geometry twice, each time using a different uniform color.
 	3. wsad controls one triangle and arrow keys control the others
 
 	The update function must update the position of the triangles based on keyboard input.*/
-
-extern const char* vertexShaderCode;
-extern const char* fragmentShaderCode;
 
 void sendDataToOpenGL()
 {
 	GLfloat verts[] =
 	{
-		0.8f, -0.3f,//trying to do a push
-		1.0f, 0.0f, 0.0f,
+		0.8f, -0.3f,
+		1.0f, 0.0f, 0.0f, 
 		0.6f, -0.6f,
-		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 
 		0.9f, -0.6f,
 		1.0f, 0.0f, 0.0f,
 		-0.8f, 0.5f,
-		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 
 		-1.0f, 0.2f,
-		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 
 		-0.7f, 0.2f,
-		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 
 	};
 
 	GLuint VertBufferID;
@@ -49,16 +51,33 @@ void sendDataToOpenGL()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-//this is to color my triangles
+string readShaderCode(const char* filename)
+{
+	ifstream meInput(filename);
+	{
+		if (!meInput.good())
+		{
+			cout << "File has failed to load" << filename;
+			exit(1);
+		}
+		return std::string(
+			std::istreambuf_iterator<char>(meInput),
+			std::istreambuf_iterator<char>());
+	}
+}
+
 void InstallShaders()
 {
 	GLuint vert = glCreateShader(GL_VERTEX_SHADER);
 	GLuint frag = glCreateShader(GL_FRAGMENT_SHADER);
 
 	const char* adapt[1];
-	adapt[0] = vertexShaderCode;
+	string Vertex = readShaderCode("VertexShader.glsl");
+	adapt[0] = Vertex.c_str();
 	glShaderSource(vert, 1, adapt, 0);
-	adapt[0] = fragmentShaderCode;
+
+	string Fragment = readShaderCode("FragmentShader.glsl");
+	adapt[0] = Fragment.c_str();
 	glShaderSource(frag, 1, adapt, 0);
 
 	glCompileShader(vert);
@@ -70,6 +89,12 @@ void InstallShaders()
 	glLinkProgram(ColorMe);
 
 	glUseProgram(ColorMe);
+
+	GLint Color = glGetUniformLocation(ColorMe, "Color");
+	glUniform3f(Color, 1.0f, 0.0f, 0.0f);
+
+	glm::vec2 Offset;
+	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
 }
 
 void MeGLWindow::initializeGL()
