@@ -107,16 +107,15 @@ void MeGLWindow::paintGL()
 	GLint UniformColorLoc = glGetUniformLocation(ColorMe, "Color");
 	GLint UniformYFlipLoc = glGetUniformLocation(ColorMe, "yflip");
 
-	glm::vec2 Triangle1Offset;
+	glm::vec2 Triangle1Offset(-0.4, 0.2);
 	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
-	glUniform2f(offsetUniformLoc, Triangle1Offset[0], Triangle1Offset[1]);
+	glUniform2fv(offsetUniformLoc, 1, &Triangle1Offset[0]);
 
 	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
 	glUniform1f(UniformYFlipLoc, 1.0f);
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0); //draw indices info 
 	
-	UniformColor.r = 0;
-	UniformColor.b = 1;
+	UniformColor.g = 1;
 	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
 	glUniform1f(UniformYFlipLoc, -1.0f);
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);

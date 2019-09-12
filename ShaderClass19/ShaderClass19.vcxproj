@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\Middleware\QT\include;$(ProjectDir)..\Middleware\glfw\include;$(ProjectDir)..\Middleware\glm\glm;$(ProjectDir)..\Middleware\glew\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\Middleware\QT\include;$(ProjectDir)..\Middleware\glfw\include;$(ProjectDir)..\Middleware\glm\glm;$(ProjectDir)..\Middleware\glm\glm\gtx;$(ProjectDir)..\Middleware\glew\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -164,12 +164,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="MeGLWindow.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderClass19.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Middleware\glfw\include\glfw3.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="MeGLWindow.h" />
   </ItemGroup>
   <ItemGroup>

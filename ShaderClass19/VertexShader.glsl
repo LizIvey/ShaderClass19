@@ -3,7 +3,7 @@
 in layout(location = 0) vec2 position;
 in layout(location = 1) vec3 Color;
 
-uniform vec2 Offset = vec2(-0.4, 0.2);
+uniform vec2 Offset;
 uniform float yflip;
 
 out vec3 theColor;
