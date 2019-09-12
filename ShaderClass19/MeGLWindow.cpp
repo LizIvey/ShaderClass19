@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <glm.hpp>
+#include <glfw3.h>
 using namespace std;
 
 /*
@@ -96,10 +97,10 @@ void InstallShaders()
 	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
 	glUniform2f(offsetUniformLoc, Triangle1Offset[0], Triangle1Offset[1]);
 
-	if (GetAsyncKeyState(VK_LEFT))
+	/*if (KEYEVENTF_KEYUP)
 	{
-		
-	}
+		cout << "Moving Up";
+	}*/
 }
 
 void MeGLWindow::initializeGL()
@@ -113,12 +114,4 @@ void MeGLWindow::paintGL()
 {
 	glViewport(0, 0, width(), height());
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0); //draw indices info 
-}
-
-void UpdatePosition()
-{
-	if (GetAsyncKeyState(VK_LEFT))
-	{
-
-	}
 }
