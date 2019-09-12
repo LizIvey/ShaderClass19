@@ -3,8 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <glm.hpp>
-#include <glfw3.h>
 using namespace std;
+GLuint ColorMe;
 
 /*
 Assignment #2:
@@ -27,11 +27,11 @@ void sendDataToOpenGL()
 		0.9f, -0.6f,
 		1.0f, 0.0f, 0.0f,
 		-0.8f, 0.5f,
-		0.0f, 1.0f, 0.0f, 
+		1.0f, 1.0f, 0.0f, 
 		-1.0f, 0.2f,
-		0.0f, 1.0f, 0.0f, 
+		1.0f, 1.0f, 0.0f, 
 		-0.7f, 0.2f,
-		0.0f, 1.0f, 0.0f, 
+		1.0f, 1.0f, 0.0f, 
 	};
 
 	GLuint VertBufferID;
@@ -83,24 +83,12 @@ void InstallShaders()
 	glCompileShader(vert);
 	glCompileShader(frag);
 
-	GLuint ColorMe = glCreateProgram();
+	ColorMe = glCreateProgram();
 	glAttachShader(ColorMe, vert);
 	glAttachShader(ColorMe, frag);
 	glLinkProgram(ColorMe);
 
 	glUseProgram(ColorMe);
-
-	GLint Color = glGetUniformLocation(ColorMe, "Color");
-	glUniform3f(Color, 1.0f, 0.0f, 0.0f);
-
-	glm::vec2 Triangle1Offset;
-	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
-	glUniform2f(offsetUniformLoc, Triangle1Offset[0], Triangle1Offset[1]);
-
-	/*if (KEYEVENTF_KEYUP)
-	{
-		cout << "Moving Up";
-	}*/
 }
 
 void MeGLWindow::initializeGL()
@@ -112,6 +100,24 @@ void MeGLWindow::initializeGL()
 
 void MeGLWindow::paintGL()
 {
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, width(), height());
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0); //draw indices info 
+
+	glm::vec4 UniformColor(1.0f, 0.0f, 0.0f, 1.0f);
+	GLint UniformColorLoc = glGetUniformLocation(ColorMe, "Color");
+	GLint UniformYFlipLoc = glGetUniformLocation(ColorMe, "yflip");
+
+	glm::vec2 Triangle1Offset;
+	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
+	glUniform2f(offsetUniformLoc, Triangle1Offset[0], Triangle1Offset[1]);
+
+	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
+	glUniform1f(UniformYFlipLoc, 1.0f);
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0); //draw indices info 
+	
+	UniformColor.r = 0;
+	UniformColor.b = 1;
+	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
+	glUniform1f(UniformYFlipLoc, -1.0f);
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
 }
