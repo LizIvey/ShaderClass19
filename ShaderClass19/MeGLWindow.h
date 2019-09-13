@@ -7,6 +7,7 @@ class MeGLWindow : public QGLWidget
 protected:
 	void initializeGL();
 	void paintGL();
+	void KeyboardInput(QKeyEvent*);
 };
 
 #endif

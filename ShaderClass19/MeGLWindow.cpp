@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <glm.hpp>
+#include <QtGui\qkeyevent>
+
 using namespace std;
 GLuint ColorMe;
 
@@ -119,4 +121,23 @@ void MeGLWindow::paintGL()
 	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
 	glUniform1f(UniformYFlipLoc, -1.0f);
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
+}
+
+void MeGLWindow::KeyboardInput(QKeyEvent* e)
+{
+	switch (e->key())
+	{
+		/*case Qt::Key::Key_W
+			camera.moveForward();
+			break;
+		case Qt::Key::Key_S
+			camera.moveBackward();
+			break;
+		case Qt::Key::Key_A
+			camera.strafeLeft();
+			break;
+		case Qt::Key::Key_D
+			camera.strafeRight();
+			break;*/
+	}
 }

@@ -9,4 +9,9 @@ class Camera
 public:
 	Camera();
 	glm::mat4 getWorldToViewMatrix() const;
+
+	/*void camera.moveForward();
+	void camera.moveBackward();
+	void camera.strafeLeft();
+	void camera.strafeRight();*/
 };
