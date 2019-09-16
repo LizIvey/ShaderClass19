@@ -10,8 +10,12 @@ public:
 	Camera();
 	glm::mat4 getWorldToViewMatrix() const;
 
-	/*void camera.moveForward();
-	void camera.moveBackward();
-	void camera.strafeLeft();
-	void camera.strafeRight();*/
+	void moveForward();
+	void moveBackward();
+	void moveLeft();
+	void moveRight();
+	void goUp();
+	void goBack();
+	void goLeft();
+	void goRight();
 };

@@ -13,22 +13,45 @@ glm::mat4 Camera::getWorldToViewMatrix() const
 
 const float Movement_Speed = 0.1f;
 
-/*void Camera::moveForward()
+void Camera::moveForward()
 {
-
+	position += Movement_Speed * viewDirection;
 }
-
 void Camera::moveBackward()
 {
-
+	position += -Movement_Speed * viewDirection;
 }
 
-void Camera::strafeLeft()
+void Camera::moveLeft()
 {
-
+	glm::vec3 StrafeDirection = glm::cross(viewDirection, UP);
+	position += -Movement_Speed * StrafeDirection;
 }
 
-void Camera::strafeRight()
+void Camera::moveRight()
 {
+	glm::vec3 StrafeDirection = glm::cross(viewDirection, UP);
+	position += Movement_Speed * StrafeDirection;
+}
 
-}*/
+void Camera::goUp()
+{
+	position += Movement_Speed * viewDirection;
+}
+
+void Camera::goBack()
+{
+	position += -Movement_Speed * viewDirection;
+}
+
+void Camera::goLeft()
+{
+	glm::vec3 StrafeDirection = glm::cross(viewDirection, UP);
+	position += -Movement_Speed * StrafeDirection;
+}
+
+void Camera::goRight()
+{
+	glm::vec3 StrafeDirection = glm::cross(viewDirection, UP);
+	position += Movement_Speed * StrafeDirection;
+}
