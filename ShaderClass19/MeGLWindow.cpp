@@ -4,9 +4,11 @@
 #include <fstream>
 #include <glm.hpp>
 #include <QtGui\qkeyevent>
+#include <Camera.h>
 
 using namespace std;
 GLuint ColorMe;
+Camera camera;
 
 /*
 Assignment #2:
@@ -93,45 +95,6 @@ void InstallShaders()
 	glUseProgram(ColorMe);
 }
 
-void MeGLWindow::KeyboardInput(QKeyEvent* e)
-{
-	switch (e->key())
-	{
-	case Qt::Key::Key_W:
-		camera.moveForward();
-		break;
-	case Qt::Key::Key_S:
-		camera.moveBackward();
-		break;
-	case Qt::Key::Key_A:
-		camera.moveLeft();
-		break;
-	case Qt::Key::Key_D:
-		camera.moveRight();
-		break;
-	case Qt::Key::Key_Up:
-		camera.goUp();
-		break;
-	case Qt::Key::Key_Back:
-		camera.goBack();
-		break;
-	case Qt::Key::Key_Left:
-		camera.goLeft();
-		break;
-	case Qt::Key::Key_Right:
-		camera.goRight();
-		break;
-	}
-	repaint();
-}
-
-void MeGLWindow::initializeGL()
-{
-	glewInit();
-	sendDataToOpenGL();
-	InstallShaders();
-}
-
 void MeGLWindow::paintGL()
 {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -148,9 +111,49 @@ void MeGLWindow::paintGL()
 	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
 	glUniform1f(UniformYFlipLoc, 1.0f);
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0); //draw indices info 
-	
+
 	UniformColor.g = 1;
 	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
 	glUniform1f(UniformYFlipLoc, -1.0f);
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
 }
+
+void MeGLWindow::KeyboardInput(QKeyEvent* e)
+{
+	switch (e->key())
+	{
+	case Qt::Key::Key_W:
+		camera.moveForward();
+		break;
+	case Qt::Key::Key_S:
+		camera.moveBackward();
+		break;
+	case Qt::Key::Key_A:
+		camera.strafeLeft();
+		break;
+	case Qt::Key::Key_D:
+		camera.strafeRight();
+		break;
+	case Qt::Key::Key_Up:
+		camera.moveUp();
+		break;
+	case Qt::Key::Key_Back:
+		camera.moveDown();
+		break;
+	case Qt::Key::Key_Left:
+		camera.strafeLeft();
+		break;
+	case Qt::Key::Key_Right:
+		camera.strafeRight();
+		break;
+	}
+	repaint();
+}
+
+void MeGLWindow::initializeGL()
+{
+	glewInit();
+	sendDataToOpenGL();
+	InstallShaders();
+}
+

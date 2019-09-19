@@ -1,9 +1,31 @@
 #include <Camera.h>
 #include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\transform.hpp>
+
+
+const float Camera::MOVEMENT_SPEED = 0.1f;
+
 Camera::Camera() :
 	viewDirection(0.0f, 0.0f, -1.0f),
-UP(0.0f, 1.0f, 0.0f)
+	UP(0.0f, 1.0f, 0.0f)
 {
+}
+
+void Camera::mouseUpdate(const glm::vec2& newMousePosition)
+{
+	glm::vec2 mouseDelta = newMousePosition - oldMousePosition;
+	if (glm::length(mouseDelta) > 50.0f)
+	{
+		oldMousePosition = newMousePosition;
+		return;
+	}
+	const float ROTATIONAL_SPEED = 0.5f;
+	strafeDirection = glm::cross(viewDirection, UP);
+	glm::mat4 rotator = glm::rotate(-mouseDelta.x * ROTATIONAL_SPEED, UP) *
+		glm::rotate(-mouseDelta.y * ROTATIONAL_SPEED, strafeDirection);
+
+	viewDirection = glm::mat3(rotator) * viewDirection;
+
+	oldMousePosition = newMousePosition;
 }
 
 glm::mat4 Camera::getWorldToViewMatrix() const
@@ -11,47 +33,32 @@ glm::mat4 Camera::getWorldToViewMatrix() const
 	return glm::lookAt(position, position + viewDirection, UP);
 }
 
-const float Movement_Speed = 0.1f;
-
 void Camera::moveForward()
 {
-	position += Movement_Speed * viewDirection;
+	position += MOVEMENT_SPEED * viewDirection;
 }
+
 void Camera::moveBackward()
 {
-	position += -Movement_Speed * viewDirection;
+	position += -MOVEMENT_SPEED * viewDirection;
 }
 
-void Camera::moveLeft()
+void Camera::strafeLeft()
 {
-	glm::vec3 StrafeDirection = glm::cross(viewDirection, UP);
-	position += -Movement_Speed * StrafeDirection;
+	position += -MOVEMENT_SPEED * strafeDirection;
 }
 
-void Camera::moveRight()
+void Camera::strafeRight()
 {
-	glm::vec3 StrafeDirection = glm::cross(viewDirection, UP);
-	position += Movement_Speed * StrafeDirection;
+	position += MOVEMENT_SPEED * strafeDirection;
 }
 
-void Camera::goUp()
+void Camera::moveUp()
 {
-	position += Movement_Speed * viewDirection;
+	position += MOVEMENT_SPEED * UP;
 }
 
-void Camera::goBack()
+void Camera::moveDown()
 {
-	position += -Movement_Speed * viewDirection;
-}
-
-void Camera::goLeft()
-{
-	glm::vec3 StrafeDirection = glm::cross(viewDirection, UP);
-	position += -Movement_Speed * StrafeDirection;
-}
-
-void Camera::goRight()
-{
-	glm::vec3 StrafeDirection = glm::cross(viewDirection, UP);
-	position += Movement_Speed * StrafeDirection;
+	position += -MOVEMENT_SPEED * UP;
 }
