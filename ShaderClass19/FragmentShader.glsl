@@ -1,7 +1,7 @@
 #version 430
 
-out vec4 daColor;
-uniform vec4 Color;
+out vec3 daColor;
+uniform vec3 Color;
 
 void main()
 {

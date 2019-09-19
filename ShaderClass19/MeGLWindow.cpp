@@ -4,11 +4,11 @@
 #include <fstream>
 #include <glm.hpp>
 #include <QtGui\qkeyevent>
-#include <Camera.h>
 
 using namespace std;
 GLuint ColorMe;
-Camera camera;
+glm::vec3 TriPos_1(-0.4f, 0.2f, 0.0f);
+glm::vec3 TriPos_2(-0.4f, 0.2f, 0.0f);
 
 /*
 Assignment #2:
@@ -20,22 +20,24 @@ Assignment #2:
 
 	The update function must update the position of the triangles based on keyboard input.*/
 
-void sendDataToOpenGL()
+struct Vertex
 {
-	GLfloat verts[] =
+	glm::vec3 position;
+	glm::vec3 color;
+};
+
+void MeGLWindow::sendDataToOpenGL()
+{
+	Vertex verts[] =
 	{
-		0.8f, -0.3f,
-		1.0f, 0.0f, 0.0f, 
-		0.6f, -0.6f,
-		1.0f, 0.0f, 0.0f, 
-		0.9f, -0.6f,
-		1.0f, 0.0f, 0.0f,
-		-0.8f, 0.5f,
-		1.0f, 1.0f, 0.0f, 
-		-1.0f, 0.2f,
-		1.0f, 1.0f, 0.0f, 
-		-0.7f, 0.2f,
-		1.0f, 1.0f, 0.0f, 
+		glm::vec3(0.8f, -0.3f, +0.0f),
+		glm::vec3(+1.0f, +0.0f, +0.0f),
+
+		glm::vec3(+0.6f, -0.6f, +0.0f),
+		glm::vec3(+0.0f, +1.0f, +0.0f),
+
+		glm::vec3(+0.9f,  -0.6f, +0.0f),
+		glm::vec3(+0.0f, +0.0f, +1.0f),
 	};
 
 	GLuint VertBufferID;
@@ -43,56 +45,134 @@ void sendDataToOpenGL()
 	glBindBuffer(GL_ARRAY_BUFFER, VertBufferID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);//position
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
 
 	glEnableVertexAttribArray(1);//color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (char*)(sizeof(float) * 2));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (char*)(sizeof(float) * 2));
 
-	GLushort indices[] = {0,1,2, 3,4,5}; //better way to generate multiple triangles with repeating verts (takes the verts locations & make triangle)
+	GLushort indices[] = {0,1,2}; //better way to generate multiple triangles with repeating verts (takes the verts locations & make triangle)
 	GLuint IndexBufferID;
 	glGenBuffers(1, &IndexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-string readShaderCode(const char* filename)
+bool checkStatus(GLuint objectID,
+	PFNGLGETSHADERIVPROC objectPropertyGetterFunc,
+	PFNGLGETSHADERINFOLOGPROC getInfoLogFunc,
+	GLenum statusType)
 {
-	ifstream meInput(filename);
+	GLint status;
+	objectPropertyGetterFunc(objectID, statusType, &status);
+	if (status != GL_TRUE)
 	{
-		if (!meInput.good())
-		{
-			cout << "File has failed to load" << filename;
-			exit(1);
-		}
-		return std::string(
-			std::istreambuf_iterator<char>(meInput),
-			std::istreambuf_iterator<char>());
+		GLint infoLogLength;
+		objectPropertyGetterFunc(objectID, GL_INFO_LOG_LENGTH, &infoLogLength);
+		GLchar* buffer = new GLchar[infoLogLength];
+
+		GLsizei bufferSize;
+		getInfoLogFunc(objectID, infoLogLength, &bufferSize, buffer);
+		cout << buffer;
+
+		delete[] buffer;
+
+		return false;
 	}
+
+	return true;
 }
 
-void InstallShaders()
+bool MeGLWindow::checkShaderStatus(GLuint shaderID)
 {
-	GLuint vert = glCreateShader(GL_VERTEX_SHADER);
-	GLuint frag = glCreateShader(GL_FRAGMENT_SHADER);
+	return checkStatus(shaderID, glGetShaderiv, glGetShaderInfoLog, GL_COMPILE_STATUS);
+}
 
-	const char* adapt[1];
-	string Vertex = readShaderCode("VertexShader.glsl");
-	adapt[0] = Vertex.c_str();
-	glShaderSource(vert, 1, adapt, 0);
+bool MeGLWindow::checkProgramStatus(GLuint ColorMe)
+{
+	return checkStatus(ColorMe, glGetProgramiv, glGetProgramInfoLog, GL_LINK_STATUS);
+}
 
-	string Fragment = readShaderCode("FragmentShader.glsl");
-	adapt[0] = Fragment.c_str();
-	glShaderSource(frag, 1, adapt, 0);
 
-	glCompileShader(vert);
-	glCompileShader(frag);
+string MeGLWindow::readShaderCode(const char* fileName)
+{
+	ifstream meInput(fileName);
+	if (!meInput.good())
+	{
+		cout << "File failed to load... " << fileName;
+		exit(1);
+	}
+	return std::string(std::istreambuf_iterator<char>(meInput),
+		std::istreambuf_iterator<char>());
+}
+
+void MeGLWindow::installShaders()
+{
+	GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+	GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+
+	const GLchar* adapter[1];
+	string temp = readShaderCode("VertexShader.glsl");
+	adapter[0] = temp.c_str();
+	glShaderSource(vertexShaderID, 1, adapter, 0);
+	temp = readShaderCode("FragmentShader.glsl");
+	adapter[0] = temp.c_str();
+	glShaderSource(fragmentShaderID, 1, adapter, 0);
+
+	glCompileShader(vertexShaderID);
+	glCompileShader(fragmentShaderID);
+
+	if (!checkShaderStatus(vertexShaderID) || !checkShaderStatus(fragmentShaderID))
+		return;
 
 	ColorMe = glCreateProgram();
-	glAttachShader(ColorMe, vert);
-	glAttachShader(ColorMe, frag);
+	glAttachShader(ColorMe, vertexShaderID);
+	glAttachShader(ColorMe, fragmentShaderID);
 	glLinkProgram(ColorMe);
 
+	if (!checkProgramStatus(ColorMe))
+		return;
+
 	glUseProgram(ColorMe);
+
+}
+
+void MeGLWindow::initializeGL()
+{
+	glewInit();
+	sendDataToOpenGL();
+	installShaders();
+}
+
+void MeGLWindow::keyPressEvent(QKeyEvent* e)
+{
+	switch (e->key())
+	{
+	case Qt::Key::Key_W:
+		TriPos_1.y += 0.4f;
+		break;
+	case Qt::Key::Key_S:
+		TriPos_1.y -= 0.4f;
+		break;
+	case Qt::Key::Key_A:
+		TriPos_1.x -= 0.4f;
+		break;
+	case Qt::Key::Key_D:
+		TriPos_1.x += 0.4f;
+		break;
+	case Qt::Key::Key_Up:
+		TriPos_2.y -= 0.4f;
+		break;
+	case Qt::Key::Key_Down:
+		TriPos_2.y += 0.4f;
+		break;
+	case Qt::Key::Key_Left:
+		TriPos_2.x -= 0.4f;
+		break;
+	case Qt::Key::Key_Right:
+		TriPos_2.x += 0.4f;
+		break;
+	}
+	repaint();
 }
 
 void MeGLWindow::paintGL()
@@ -101,59 +181,31 @@ void MeGLWindow::paintGL()
 	glViewport(0, 0, width(), height());
 
 	glm::vec4 UniformColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec3 offset(TriPos_1.x, TriPos_1.y, 0);
+
 	GLint UniformColorLoc = glGetUniformLocation(ColorMe, "Color");
+	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
 	GLint UniformYFlipLoc = glGetUniformLocation(ColorMe, "yflip");
 
-	glm::vec2 Triangle1Offset(-0.4, 0.2);
-	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
-	glUniform2fv(offsetUniformLoc, 1, &Triangle1Offset[0]);
-
-	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
+	//Triangle 1
+	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
+	glUniform3fv(offsetUniformLoc, 1, &offset[0]);
 	glUniform1f(UniformYFlipLoc, 1.0f);
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0); //draw indices info 
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0); //draw indices info 
 
+	//Triangle 2
+	offset.x = TriPos_2.x;
+	offset.y = TriPos_2.y;
 	UniformColor.g = 1;
-	glUniform4fv(UniformColorLoc, 1, &UniformColor[0]);
+	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
+	glUniform3fv(offsetUniformLoc, 1, &offset[0]);
 	glUniform1f(UniformYFlipLoc, -1.0f);
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
 }
 
-void MeGLWindow::KeyboardInput(QKeyEvent* e)
+MeGLWindow::~MeGLWindow()
 {
-	switch (e->key())
-	{
-	case Qt::Key::Key_W:
-		camera.moveForward();
-		break;
-	case Qt::Key::Key_S:
-		camera.moveBackward();
-		break;
-	case Qt::Key::Key_A:
-		camera.strafeLeft();
-		break;
-	case Qt::Key::Key_D:
-		camera.strafeRight();
-		break;
-	case Qt::Key::Key_Up:
-		camera.moveUp();
-		break;
-	case Qt::Key::Key_Back:
-		camera.moveDown();
-		break;
-	case Qt::Key::Key_Left:
-		camera.strafeLeft();
-		break;
-	case Qt::Key::Key_Right:
-		camera.strafeRight();
-		break;
-	}
-	repaint();
-}
-
-void MeGLWindow::initializeGL()
-{
-	glewInit();
-	sendDataToOpenGL();
-	InstallShaders();
+	glUseProgram(0);
+	glDeleteProgram(ColorMe);
 }
 
