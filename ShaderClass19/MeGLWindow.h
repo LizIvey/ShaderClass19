@@ -4,11 +4,13 @@
 
 class MeGLWindow : public QGLWidget
 {
-	void sendDataToOpenGL();
+	//void sendDataToOpenGL();
 	bool checkShaderStatus(GLuint shaderID);
 	bool checkProgramStatus(GLuint programID);
 	std::string readShaderCode(const char* filename);
 	void installShaders();
+	void DrawCircle(float x, float y, float r, int LineSeg);
+	void DrawDiamond();
 
 protected:
 	void initializeGL();

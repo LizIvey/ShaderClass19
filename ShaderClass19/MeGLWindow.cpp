@@ -4,6 +4,7 @@
 #include <fstream>
 #include <glm.hpp>
 #include <QtGui\qkeyevent>
+#include <math.h>
 
 using namespace std;
 GLuint ColorMe;
@@ -13,9 +14,9 @@ glm::vec3 TriPos_2(0.0f, 0.0f, 0.0f);
 /*
 Assignment #3:
 
-	1- Show a diamond that is our playing field. Make it take up the entire area.
+	1- Show a diamond that is our playing field. Make it take up the entire area. -> DONE!
 
-	2- One shape, you choose, make it cool looking. No more triangle shape.
+	2- One shape, you choose, make it cool looking. No more triangle shape. 
 
 	3- Give the shape a random velocity...something reasonable
 
@@ -23,42 +24,29 @@ Assignment #3:
 
 	5- Update your shape position every frame.*/
 
-struct Vertex
+void MeGLWindow::DrawDiamond()
 {
-	glm::vec3 position;
-	glm::vec3 color;
-};
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(0.0f, 1.0f); 
+	glVertex2f(1.0f, 0.0f); 
+	glVertex2f(0.0f, -1.0f); 
+	glVertex2f(-1.0f, 0.0f); 
+	glEnd();
+}
 
-void MeGLWindow::sendDataToOpenGL()
+void MeGLWindow::DrawCircle(float x, float y, float r, int LineSeg)
 {
-	Vertex verts[] =
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < LineSeg; i++)
 	{
+		float theta = 2.0f * 3.1415926f * float(i) / float(LineSeg); //get the current
 
-		glm::vec3(0.8f, -0.3f, +0.0f),
-		glm::vec3(+1.0f, +0.0f, +0.0f),
+		float XX = r * cos(theta); //calculate x
+		float YY = r * sin(theta); //calulate y
 
-		glm::vec3(+0.6f, -0.6f, +0.0f),
-		glm::vec3(+0.0f, +1.0f, +0.0f),
-
-		glm::vec3(+0.9f,  -0.6f, +0.0f),
-		glm::vec3(+0.0f, +0.0f, +1.0f),
-	};
-
-	GLuint VertBufferID;
-	glGenBuffers(1, &VertBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, VertBufferID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);//position
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
-
-	glEnableVertexAttribArray(1);//color
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (char*)(sizeof(float) * 2));
-
-	GLushort indices[] = {0,1,2}; //better way to generate multiple triangles with repeating verts (takes the verts locations & make triangle)
-	GLuint IndexBufferID;
-	glGenBuffers(1, &IndexBufferID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		glVertex2f(XX + x, YY + y); //output verts
+	}
+	glEnd();
 }
 
 bool checkStatus(GLuint objectID,
@@ -143,8 +131,10 @@ void MeGLWindow::installShaders()
 void MeGLWindow::initializeGL()
 {
 	glewInit();
-	sendDataToOpenGL();
+	//sendDataToOpenGL();
 	installShaders();
+	DrawCircle(0.0f, 0.0f, 0.2, 10);
+	DrawDiamond();
 }
 
 void MeGLWindow::keyPressEvent(QKeyEvent* e)
@@ -181,6 +171,8 @@ void MeGLWindow::keyPressEvent(QKeyEvent* e)
 
 void MeGLWindow::paintGL()
 {
+	float theta;
+
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, width(), height());
 
@@ -193,12 +185,14 @@ void MeGLWindow::paintGL()
 	//Step 1: uniform position and color of the diamond
 	glUniform3fv(UniformPositionLoc, 1, &UniformPosition[0]);
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
-	glBegin(GL_LINE_LOOP);
-	glVertex2f(0.0f, 1.0f); //bottom point
-	glVertex2f(1.0f, 0.0f); //Right point
-	glVertex2f(0.0f, -1.0f); //Top Point
-	glVertex2f(-1.0f, 0.0f); //Left point
-	glEnd();
+	DrawDiamond();
+
+	//Step 2: I am going to draw a circle @ the origin
+	UniformColor.g = 0;
+	UniformColor.r = 1;
+	glUniform3fv(UniformPositionLoc, 1, &UniformPosition[0]);
+	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
+	DrawCircle(0.0f, 0.0f, 0.1f, 30);
 }
 
 MeGLWindow::~MeGLWindow()
