@@ -11,14 +11,17 @@ glm::vec3 TriPos_1(-0.4f, 0.2f, 0.0f);
 glm::vec3 TriPos_2(-0.4f, 0.2f, 0.0f);
 
 /*
-Assignment #2:
+Assignment #3:
 
-	1. in paintgl -> update and draw
-	2. two triangles one of different solid color use uniforms to do that. 
-		Just paint the ONE triangle geometry twice, each time using a different uniform color.
-	3. wsad controls one triangle and arrow keys control the others
+	1- Show a diamond that is our playing field. Make it take up the entire area.
 
-	The update function must update the position of the triangles based on keyboard input.*/
+	2- One shape, you choose, make it cool looking. No more triangle shape.
+
+	3- Give the shape a random velocity...something reasonable
+
+	4- Add a QTimer to get an automatic update function. See my Game Engine playlist on how to do this.
+
+	5- Update your shape position every frame.*/
 
 struct Vertex
 {
