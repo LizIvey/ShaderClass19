@@ -7,8 +7,8 @@
 
 using namespace std;
 GLuint ColorMe;
-glm::vec3 TriPos_1(-0.4f, 0.2f, 0.0f);
-glm::vec3 TriPos_2(-0.4f, 0.2f, 0.0f);
+glm::vec3 TriPos_1(0.0f, 0.0f, 0.0f);
+glm::vec3 TriPos_2(0.0f, 0.0f, 0.0f);
 
 /*
 Assignment #3:
@@ -33,6 +33,7 @@ void MeGLWindow::sendDataToOpenGL()
 {
 	Vertex verts[] =
 	{
+
 		glm::vec3(0.8f, -0.3f, +0.0f),
 		glm::vec3(+1.0f, +0.0f, +0.0f),
 
@@ -183,27 +184,21 @@ void MeGLWindow::paintGL()
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, width(), height());
 
-	glm::vec4 UniformColor(1.0f, 0.0f, 0.0f, 1.0f);
-	glm::vec3 offset(TriPos_1.x, TriPos_1.y, 0);
+	glm::vec4 UniformColor(0.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 UniformPosition(TriPos_1.x, TriPos_1.y, 0);
 
 	GLint UniformColorLoc = glGetUniformLocation(ColorMe, "Color");
-	GLint offsetUniformLoc = glGetUniformLocation(ColorMe, "Offset");
-	GLint UniformYFlipLoc = glGetUniformLocation(ColorMe, "yflip");
+	GLint UniformPositionLoc = glGetUniformLocation(ColorMe, "Offset");
 
-	//Triangle 1
+	//Step 1: uniform position and color of the diamond
+	glUniform3fv(UniformPositionLoc, 1, &UniformPosition[0]);
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
-	glUniform3fv(offsetUniformLoc, 1, &offset[0]);
-	glUniform1f(UniformYFlipLoc, 1.0f);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0); //draw indices info 
-
-	//Triangle 2
-	offset.x = TriPos_2.x;
-	offset.y = TriPos_2.y;
-	UniformColor.g = 1;
-	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
-	glUniform3fv(offsetUniformLoc, 1, &offset[0]);
-	glUniform1f(UniformYFlipLoc, -1.0f);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0);
+	glBegin(GL_LINE_LOOP);
+	glVertex2f(0.0f, 1.0f); //bottom point
+	glVertex2f(1.0f, 0.0f); //Right point
+	glVertex2f(0.0f, -1.0f); //Top Point
+	glVertex2f(-1.0f, 0.0f); //Left point
+	glEnd();
 }
 
 MeGLWindow::~MeGLWindow()

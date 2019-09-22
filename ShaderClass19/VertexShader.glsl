@@ -11,6 +11,5 @@ out vec3 theColor;
 void main()
 {
 	gl_Position = vec4(position + Offset, 1.0);
-	gl_Position.y = gl_Position.y * yflip;
 	theColor = Color;
 };
