@@ -5,13 +5,10 @@
 #include <glm.hpp>
 #include <QtGui\qkeyevent>
 #include <math.h>
-#include <Vector2D.h>
 
 using namespace std;
 
 GLuint MyShaders;
-glm::vec2 Pos_1(0.0f, 0.0f);
-glm::vec2 BallPosition(0.0f, 0.0f);
 int debugCount = 0;
 
 /*
@@ -29,35 +26,61 @@ Assignment #3:
 
 struct Vertex
 {
-	glm::vec2 position;
+	glm::vec3 position;
 	glm::vec3 color;
 };
 
-void MeGLWindow::DrawDiamond()
+namespace
 {
-	Vertex Diamond[] =
+	Vertex Ball[] =
 	{
-		glm::vec2(0.0f, 1.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec2(1.0f, 0.0f),
+		glm::vec3(0.1f, -0.1f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec2(0.0f, -1.0f),
+		glm::vec3(-0.1f, -0.1f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec2(-1.0f, 0.0f),
+		glm::vec3(0.2f, -0.2f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
 	};
 
-	GLuint vertexBufferID;
-	glGenBuffers(1, &vertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	Vertex Diamond[] =
+	{
+		glm::vec3(0.0f, 1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+
+		glm::vec3(1.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+
+		glm::vec3(0.0f, -1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+
+		glm::vec3(-1.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+	};
+
+	const unsigned int NUM_VERTS = sizeof(Ball) / sizeof(*Ball);
+
+	GLuint BoundVertexBufferID;
+	GLuint BallvertexBufferID;
+
+	glm::vec3 transformedPoints[NUM_VERTS];
+	glm::vec3 Pos_1(0.0f, 0.0f, 0.0f);
+	glm::vec3 Pos_2(0.0f, 0.0f, 0.0f);
+}
+
+void MeGLWindow::DrawDiamond()
+{
+	glGenBuffers(1, &BoundVertexBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, BoundVertexBufferID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Diamond), Diamond, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (char*)(sizeof(float) * 2));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (char*)(sizeof(float) * 2));
 
 	GLushort indices[] = { 0,1,2,3 };
 	GLuint indexBufferID;
@@ -66,32 +89,17 @@ void MeGLWindow::DrawDiamond()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-Vertex Ball[] =
-{
-	glm::vec2(0.0f, 0.0f),
-	glm::vec3(0.0f, 1.0f, 0.0f),
-
-	glm::vec2(0.1f, -0.1f),
-	glm::vec3(0.0f, 1.0f, 0.0f),
-
-	glm::vec2(-0.1f, -0.1f),
-	glm::vec3(0.0f, 1.0f, 0.0f),
-};
-
-const unsigned int NUM_VERTS = sizeof(Ball) / sizeof(*Ball);
-
 void DrawBALL()
 {
-	GLuint vertexBufferID;
-	glGenBuffers(1, &vertexBufferID);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	glGenBuffers(1, &BallvertexBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, BallvertexBufferID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Ball), Ball, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float)*6, 0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (char*)(sizeof(float) * 2));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float)*6, (char*)(sizeof(float) * 2));
 
-	GLushort indices[] = { 0,1,2};
+	GLushort indices[] = { 0,1,2, 3};
 	GLuint indexBufferID;
 	glGenBuffers(1, &indexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
@@ -210,36 +218,42 @@ void MeGLWindow::paintGL()
 	glViewport(0, 0, width(), height());
 
 	glm::vec4 UniformColor(0.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec2 UniformPosition(Pos_1.x, Pos_1.y);
+	glm::vec3 TriPos(Pos_1.x, Pos_1.y, 0.0f);
+	glm::vec3 BoundPos(Pos_2.x, Pos_2.y, 0.0f);
 
 	GLint UniformColorLoc = glGetUniformLocation(MyShaders, "Color");//uniform color
 	GLint UniformPositionLoc = glGetUniformLocation(MyShaders, "Pos");//uniform position
 
-	//Step 1: uniform position and color of the diamond0
-	glUniform2fv(UniformPositionLoc, 1, &UniformPosition[0]);
+	//Step 1: uniform position and color of the diamond
+	glUniform3fv(UniformPositionLoc, 1, &BoundPos[0]);
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
 	DrawDiamond();
-	glDrawElements(GL_LINE_LOOP, 5, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_LINE_LOOP, 6, GL_UNSIGNED_SHORT, 0);
 
-	
+	glm::vec3 translatedVerts[NUM_VERTS];
+	for (unsigned int i = 0; i < NUM_VERTS; i++)
+	{
+		translatedVerts[i] = translatedVerts[i] + Pos_1;
+	}
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(translatedVerts), translatedVerts);
+	glEnableVertexAttribArray(0);
 
 	//Step 2: I am going to draw a circle @ the origin
 	UniformColor.g = 0;
 	UniformColor.r = 1;
-	glUniform2fv(UniformPositionLoc, 1, &UniformPosition[0]);
+	glUniform3fv(UniformPositionLoc, 1, &TriPos[0]);
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
-	DrawBall(glm::vec2(0.0f, 0.0f), 0.1f, 20);
-	//DrawBALL();
-	//glDrawElements(GL_TRIANGLES, 5, GL_UNSIGNED_SHORT, 0);
+	//DrawBall(glm::vec2(0.0f, 0.0f), 0.1f, 20);
+	DrawBALL();
+	glDrawElements(GL_POLYGON, 6, GL_UNSIGNED_SHORT, 0);
 }
 
 void  MeGLWindow::BallUpdate()
 {
-	/*debugCount++;
-	if (debugCount < 100 == 0)
-	{
-		cout << "Frame!" << debugCount << endl;
-	}*/
+	glm::vec3 velocity(0.0001f, 0.0001f, +0.0f); //Change the num of zeros to slow or speed the velocity of tri1
+	Pos_1 = Pos_1 + velocity;
+	repaint();
 }
 
 MeGLWindow::~MeGLWindow()
