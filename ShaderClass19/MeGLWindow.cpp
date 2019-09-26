@@ -34,37 +34,19 @@ namespace
 {
 	Vertex Ball[] =
 	{
-		/*glm::vec3(0.0f, 0.1f, 0.0f),//0
+		glm::vec3(0.0f, 0.2f, 0.0f),//0
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
 		glm::vec3(0.1f, 0.0f, 0.0f),//1
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec3(0.0f, -0.1f, 0.0f),//2
+		glm::vec3(0.1f, -0.1f, 0.0f),//2
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec3(-0.1f, 0.0f, 0.0f),//3
+		glm::vec3(-0.1f, -0.1f, 0.0f),//3
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec3(0.0f, 0.3f, 0.0f),//4
-		glm::vec3(0.0f, 1.0f, 0.0f),
-
-		glm::vec3(-0.2f, 0.0f, 0.0f),//5
-		glm::vec3(0.0f, 1.0f, 0.0f),*/
-
-		glm::vec3(0.0f, 0.2f, 0.0f),//0
-		glm::vec3(0.0f, 1.0f, 0.0f),
-
-		glm::vec3(-0.1f, 0.1f, 0.0f),//0
-		glm::vec3(0.0f, 1.0f, 0.0f),
-
-		glm::vec3(-0.1f, -0.1f, 0.0f),//0
-		glm::vec3(0.0f, 1.0f, 0.0f),
-
-		glm::vec3(0.1f, -0.1f, 0.0f),//0
-		glm::vec3(0.0f, 1.0f, 0.0f),
-
-		glm::vec3(0.1f, 0.1f, 0.0f),//0
+		glm::vec3(-0.1f, 0.0f, 0.0f),//4
 		glm::vec3(0.0f, 1.0f, 0.0f),
 	};
 
@@ -120,7 +102,7 @@ void DrawBALL()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float)*6, (char*)(sizeof(float) * 2));
 
-	GLushort indices[] = { 0,1,2,3,4,5 };
+	GLushort indices[] = { 0,1,2,3,4 };
 	GLuint indexBufferID;
 	glGenBuffers(1, &indexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
@@ -267,7 +249,7 @@ void MeGLWindow::paintGL()
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
 	//DrawBall(glm::vec2(0.0f, 0.0f), 0.1f, 20);
 	DrawBALL();
-	glDrawElements(GL_POLYGON, 6, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_LINE_LOOP, 6, GL_UNSIGNED_SHORT, 0);
 }
 
 void  MeGLWindow::BallUpdate()
