@@ -34,16 +34,22 @@ namespace
 {
 	Vertex Ball[] =
 	{
-		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.1f, 0.0f),//0
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec3(0.1f, -0.1f, 0.0f),
+		glm::vec3(0.1f, 0.0f, 0.0f),//1
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec3(-0.1f, -0.1f, 0.0f),
+		glm::vec3(0.0f, -0.1f, 0.0f),//2
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec3(0.2f, -0.2f, 0.0f),
+		glm::vec3(-0.1f, 0.0f, 0.0f),//3
+		glm::vec3(0.0f, 1.0f, 0.0f),
+
+		glm::vec3(0.0f, 0.3f, 0.0f),//4
+		glm::vec3(0.0f, 1.0f, 0.0f),
+
+		glm::vec3(-0.2f, 0.0f, 0.0f),//5
 		glm::vec3(0.0f, 1.0f, 0.0f),
 	};
 
@@ -99,7 +105,7 @@ void DrawBALL()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float)*6, (char*)(sizeof(float) * 2));
 
-	GLushort indices[] = { 0,1,2, 3};
+	GLushort indices[] = { 0,1,2,3,4,5 };
 	GLuint indexBufferID;
 	glGenBuffers(1, &indexBufferID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
@@ -109,13 +115,13 @@ void DrawBALL()
 void DrawBall(glm::vec2 CirclePos, float r, int LineSeg)
 {
 	glBegin(GL_TRIANGLE_FAN); 
-	for (int i = 0; i < LineSeg; i++)
+	for (int i = 0; i < 30; i++)
 	{
 		float PI = 3.1415926f;
 		float theta = 2.0f * PI * float(i) / float(LineSeg); //get the current
 
-		float XX = r * cos(theta); //calculate x
-		float YY = r * sin(theta); //calulate y
+		float XX = 0.1 * cos(theta); //calculate x
+		float YY = 0.1 * sin(theta); //calulate y
 
 		glVertex2f(XX + CirclePos.x, YY + CirclePos.y); //output verts
 	}
