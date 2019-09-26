@@ -2,7 +2,6 @@
 
 #include <QT\qapplication.h>
 #include <MeGlWindow.h>
-#include <glfw3.h>
 
 int main(int argc, char* argv[])
 {
