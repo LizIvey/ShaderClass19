@@ -3,6 +3,8 @@
 #include <QtOpenGL\qglwidget>
 #include <Qt\qtimer.h>
 
+//namespace Math { struct Vector2D{}; }
+
 class MeGLWindow : public QGLWidget
 {
 	Q_OBJECT
@@ -11,7 +13,7 @@ class MeGLWindow : public QGLWidget
 	bool checkProgramStatus(GLuint programID);
 	std::string readShaderCode(const char* filename);
 	void installShaders();
-	void DrawBall(float x, float y, float r, int LineSeg);
+	//void DrawBall(float x, float y, float r, int LineSeg);
 	void DrawDiamond();
 	QTimer timer;
 
@@ -27,4 +29,3 @@ private slots:
 };
 
 #endif
-

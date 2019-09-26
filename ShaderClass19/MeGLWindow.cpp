@@ -5,10 +5,14 @@
 #include <glm.hpp>
 #include <QtGui\qkeyevent>
 #include <math.h>
+#include <Vector2D.h>
 
 using namespace std;
+
 GLuint MyShaders;
-glm::vec3 Pos_1(0.0f, 0.0f, 0.0f);
+glm::vec2 Pos_1(0.0f, 0.0f);
+glm::vec2 BallPosition(0.0f, 0.0f);
+int debugCount = 0;
 
 /*
 Assignment #3:
@@ -23,25 +27,80 @@ Assignment #3:
 
 	5- Update your shape position every frame. -> */
 
+struct Vertex
+{
+	glm::vec2 position;
+	glm::vec3 color;
+};
+
 void MeGLWindow::DrawDiamond()
 {
-	/*glBegin: Specifies the primitive or primitives that will be created from vertices presented between glBegin 
-	and the subsequent glEnd. Ten symbolic constants are accepted: GL_POINTS, GL_LINES, GL_LINE_STRIP,
-	GL_LINE_LOOP, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_QUADS, GL_QUAD_STRIP, and GL_POLYGON.*/
+	Vertex Diamond[] =
+	{
+		glm::vec2(0.0f, 1.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
 
-	/*GL_LINE_LOOP: Draws a connected group of line segments from the first vertex to the last, then back to the first. 
-	Vertices n and n + 1 define line n. The last line, however, is defined by vertices N and 1 . N lines are drawn.*/
-	glBegin(GL_LINE_LOOP); 
-	glVertex2f(0.0f, 1.0f); 
-	glVertex2f(1.0f, 0.0f); 
-	glVertex2f(0.0f, -1.0f); 
-	glVertex2f(-1.0f, 0.0f); 
-	glEnd();//end of lines
+		glm::vec2(1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+
+		glm::vec2(0.0f, -1.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+
+		glm::vec2(-1.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),
+	};
+
+	GLuint vertexBufferID;
+	glGenBuffers(1, &vertexBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Diamond), Diamond, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (char*)(sizeof(float) * 2));
+
+	GLushort indices[] = { 0,1,2,3 };
+	GLuint indexBufferID;
+	glGenBuffers(1, &indexBufferID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-void MeGLWindow::DrawBall(float x, float y, float r, int LineSeg)
+Vertex Ball[] =
 {
-	glBegin(GL_POLYGON); //Draws a single, convex polygon. Vertices 1 through N define this polygon.
+	glm::vec2(0.0f, 0.0f),
+	glm::vec3(0.0f, 1.0f, 0.0f),
+
+	glm::vec2(0.1f, -0.1f),
+	glm::vec3(0.0f, 1.0f, 0.0f),
+
+	glm::vec2(-0.1f, -0.1f),
+	glm::vec3(0.0f, 1.0f, 0.0f),
+};
+
+const unsigned int NUM_VERTS = sizeof(Ball) / sizeof(*Ball);
+
+void DrawBALL()
+{
+	GLuint vertexBufferID;
+	glGenBuffers(1, &vertexBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Ball), Ball, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (char*)(sizeof(float) * 2));
+
+	GLushort indices[] = { 0,1,2};
+	GLuint indexBufferID;
+	glGenBuffers(1, &indexBufferID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
+}
+
+void DrawBall(glm::vec2 CirclePos, float r, int LineSeg)
+{
+	glBegin(GL_TRIANGLE_FAN); 
 	for (int i = 0; i < LineSeg; i++)
 	{
 		float PI = 3.1415926f;
@@ -50,9 +109,9 @@ void MeGLWindow::DrawBall(float x, float y, float r, int LineSeg)
 		float XX = r * cos(theta); //calculate x
 		float YY = r * sin(theta); //calulate y
 
-		glVertex2f(XX + x, YY + y); //output verts
+		glVertex2f(XX + CirclePos.x, YY + CirclePos.y); //output verts
 	}
-	glEnd(); //end of polygon
+	glEnd(); 
 }
 
 bool checkStatus(GLuint objectID,
@@ -130,7 +189,6 @@ void MeGLWindow::installShaders()
 		return;
 
 	glUseProgram(MyShaders);
-
 }
 
 void MeGLWindow::initializeGL()
@@ -138,8 +196,8 @@ void MeGLWindow::initializeGL()
 	glewInit();
 	//sendDataToOpenGL();
 	installShaders();
-	DrawBall(0.0f, 0.0f, 0.2, 10);
-	DrawDiamond();
+	//DrawBall(glm::vec2(0.0f, 0.0f), 0.2, 10);
+	//DrawDiamond();
 
 	//setting up Qt Timer
 	connect(&timer, SIGNAL(timeout()), this, SLOT(BallUpdate()));
@@ -148,33 +206,40 @@ void MeGLWindow::initializeGL()
 
 void MeGLWindow::paintGL()
 {
-	float theta;
-
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, width(), height());
 
 	glm::vec4 UniformColor(0.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 UniformPosition(Pos_1.x, Pos_1.y, 0);
+	glm::vec2 UniformPosition(Pos_1.x, Pos_1.y);
 
 	GLint UniformColorLoc = glGetUniformLocation(MyShaders, "Color");//uniform color
 	GLint UniformPositionLoc = glGetUniformLocation(MyShaders, "Pos");//uniform position
 
-	//Step 1: uniform position and color of the diamond
-	glUniform3fv(UniformPositionLoc, 1, &UniformPosition[0]);
+	//Step 1: uniform position and color of the diamond0
+	glUniform2fv(UniformPositionLoc, 1, &UniformPosition[0]);
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
 	DrawDiamond();
+	glDrawElements(GL_LINE_LOOP, 5, GL_UNSIGNED_SHORT, 0);
+
+	
 
 	//Step 2: I am going to draw a circle @ the origin
 	UniformColor.g = 0;
 	UniformColor.r = 1;
-	glUniform3fv(UniformPositionLoc, 1, &UniformPosition[0]);
+	glUniform2fv(UniformPositionLoc, 1, &UniformPosition[0]);
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
-	DrawBall(0.0f, 0.0f, 0.1f, 30);
+	DrawBall(glm::vec2(0.0f, 0.0f), 0.1f, 20);
+	//DrawBALL();
+	//glDrawElements(GL_TRIANGLES, 5, GL_UNSIGNED_SHORT, 0);
 }
 
 void  MeGLWindow::BallUpdate()
 {
-
+	/*debugCount++;
+	if (debugCount < 100 == 0)
+	{
+		cout << "Frame!" << debugCount << endl;
+	}*/
 }
 
 MeGLWindow::~MeGLWindow()

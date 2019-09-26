@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="MeGLWindow.h" />
+    <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FragmentShader.glsl" />
