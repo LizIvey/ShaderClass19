@@ -5,12 +5,14 @@
 #include <glm.hpp>
 #include <QtGui\qkeyevent>
 #include <math.h>
+#include <stdlib.h>
+#include <ctime>
 
 using namespace std;
 
 GLuint MyShaders;
 int debugCount = 0;
-
+glm::vec3 velocity;
 /*
 Assignment #3:
 
@@ -202,6 +204,15 @@ void MeGLWindow::installShaders()
 	glUseProgram(MyShaders);
 }
 
+int randSign()
+{
+	return rand() % 2 == 0 ? 1 : -1;
+}
+float randComponent()
+{
+	return rand() % 100 * 0.00001 * randSign();
+}
+
 void MeGLWindow::initializeGL()
 {
 	glewInit();
@@ -209,6 +220,8 @@ void MeGLWindow::initializeGL()
 	installShaders();
 	//DrawBall(glm::vec2(0.0f, 0.0f), 0.2, 10);
 	//DrawDiamond();
+	srand(time(NULL));
+	velocity = glm::vec3(randComponent(), randComponent(), +0.0f);
 
 	//setting up Qt Timer
 	connect(&timer, SIGNAL(timeout()), this, SLOT(BallUpdate()));
@@ -254,7 +267,6 @@ void MeGLWindow::paintGL()
 
 void  MeGLWindow::BallUpdate()
 {
-	glm::vec3 velocity(-0.0001f, 0.0001f, +0.0f); //Change the num of zeros to slow or speed the velocity of tri1
 	Pos_1 = Pos_1 + velocity;
 	repaint();
 }
