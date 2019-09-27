@@ -18,11 +18,11 @@ Assignment #3:
 
 	2- One shape, you choose, make it cool looking. No more triangle shape. -> DONE!
 
-	3- Give the shape a random velocity...something reasonable ->
+	3- Give the shape a random velocity...something reasonable -> DONE!
 
-	4- Add a QTimer to get an automatic update function. See my Game Engine playlist on how to do this. ->
+	4- Add a QTimer to get an automatic update function. See my Game Engine playlist on how to do this. -> DONE!
 
-	5- Update your shape position every frame. -> */
+	5- Update your shape position every frame. -> DONE! */
 
 struct Vertex
 {
@@ -254,7 +254,7 @@ void MeGLWindow::paintGL()
 
 void  MeGLWindow::BallUpdate()
 {
-	glm::vec3 velocity(0.0001f, 0.0001f, +0.0f); //Change the num of zeros to slow or speed the velocity of tri1
+	glm::vec3 velocity(-0.0001f, 0.0001f, +0.0f); //Change the num of zeros to slow or speed the velocity of tri1
 	Pos_1 = Pos_1 + velocity;
 	repaint();
 }
