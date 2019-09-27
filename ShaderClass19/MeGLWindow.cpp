@@ -249,7 +249,7 @@ void MeGLWindow::paintGL()
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
 	//DrawBall(glm::vec2(0.0f, 0.0f), 0.1f, 20);
 	DrawBALL();
-	glDrawElements(GL_LINE_LOOP, 6, GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_POLYGON, 6, GL_UNSIGNED_SHORT, 0);
 }
 
 void  MeGLWindow::BallUpdate()
