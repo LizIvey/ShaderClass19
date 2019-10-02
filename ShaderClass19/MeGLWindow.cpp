@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <ctime>
+#include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\normal.hpp>
 
 using namespace std;
 
@@ -54,20 +55,21 @@ namespace
 
 	Vertex Diamond[] =
 	{
-		glm::vec3(0.0f, 1.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f),
-
-		glm::vec3(1.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f),//0
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec3(0.0f, -1.0f, 0.0f),
+		glm::vec3(1.0f, 0.0f, 0.0f),//1
 		glm::vec3(0.0f, 1.0f, 0.0f),
 
-		glm::vec3(-1.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, -1.0f, 0.0f),//2
+		glm::vec3(0.0f, 1.0f, 0.0f),
+
+		glm::vec3(-1.0f, 0.0f, 0.0f),//3
 		glm::vec3(0.0f, 1.0f, 0.0f),
 	};
 
 	const unsigned int NUM_VERTS = sizeof(Ball) / sizeof(*Ball);
+	const unsigned int BOUNDARY_VERTS = sizeof(Diamond) / sizeof(*Diamond);
 
 	GLuint BoundVertexBufferID;
 	GLuint BallvertexBufferID;
@@ -218,8 +220,8 @@ void MeGLWindow::initializeGL()
 	glewInit();
 	//sendDataToOpenGL();
 	installShaders();
-	//DrawBall(glm::vec2(0.0f, 0.0f), 0.2, 10);
-	//DrawDiamond();
+
+	//random seed for moving the shape
 	srand(time(NULL));
 	velocity = glm::vec3(randComponent(), randComponent(), +0.0f);
 
@@ -269,6 +271,19 @@ void  MeGLWindow::BallUpdate()
 {
 	Pos_1 = Pos_1 + velocity;
 	repaint();
+}
+
+void MeGLWindow::HandleBoundaries()
+{
+	const glm::vec3& First = Diamond[0];
+	const glm::vec3& Second = Diamond[1];
+
+	glm::vec3 Wall = Second - First;
+	glm::vec3 Normal;
+	glm::vec3 RespectiveShipLocation = Pos_1 - First;
+
+	//finding the dot product of the normal and respective shap location
+	float DotResult = glm::dot(Normal, RespectiveShipLocation);
 }
 
 MeGLWindow::~MeGLWindow()

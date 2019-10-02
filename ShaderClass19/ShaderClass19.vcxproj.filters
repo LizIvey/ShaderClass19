@@ -35,10 +35,7 @@
     <ClInclude Include="MeGLWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vector2D.h">
+    <ClInclude Include="..\Middleware\glm\glm\gtx\normal.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
