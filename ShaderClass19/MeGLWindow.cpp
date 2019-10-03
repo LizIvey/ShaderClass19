@@ -280,7 +280,7 @@ glm::vec3 VectorCounterClockwiseRot(float x, float y)
 
 void MeGLWindow::HandleBoundaries()
 {
-	glm::vec3 A = glm::vec3(0.0f, 1.0f, 0.0f);
+	/*glm::vec3 A = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 B = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 C = glm::vec3(0.0f, -1.0f, 0.0f);
 	glm::vec3 D = glm::vec3(-1.0, 0.0f, 0.0f);
@@ -311,7 +311,7 @@ void MeGLWindow::HandleBoundaries()
 	else if (Collisions = Collisions || (Dot2 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
 	else if (Collisions = Collisions || (Dot3 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
 	else if (Collisions = Collisions || (Dot4 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
-	cout << Collisions << endl; 
+	cout << Collisions << endl; */
 
 	/*if (Collisions = Collisions || (Dot2 < 0))
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -325,21 +325,22 @@ void MeGLWindow::HandleBoundaries()
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	//cout << Collisions << endl;*/
 
-	/*for (uint i = 0; i < BOUNDARY_VERTS; i++)
+	for (uint i = 0; i < BOUNDARY_VERTS; i++)
 	{
 		const glm::vec3& First = Diamond[i].position;
 		const glm::vec3& Second = Diamond[(i + 1) % BOUNDARY_VERTS].position;
 
-		glm::vec3 Wall = Second - First;
+		glm::vec3 Wall = First - Second;
 		glm::vec3 Normal = VectorCounterClockwiseRot(Wall.x, Wall.y); //Create a function for rotating nrmls
 		glm::vec3 RespectiveShipLocation = Pos_1 - First;
 
 		//finding the dot product of the normal and respective shap location
 		float DotResult = glm::dot(RespectiveShipLocation, Normal);
 
-		//Collisions = Collisions || (DotResult < 0);
-		cout << DotResult << endl;
-	}*/
+		if (Collisions = Collisions || (DotResult < 0))
+			velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+		cout << Collisions << endl;
+	}
 }
 
 MeGLWindow::~MeGLWindow()
