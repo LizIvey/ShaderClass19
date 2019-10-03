@@ -278,8 +278,8 @@ void MeGLWindow::HandleBoundaries()
 	bool Collisions = false;
 	for (uint i = 0; i < BOUNDARY_VERTS; i++)
 	{
-		const glm::vec3& First = Diamond[i];
-		const glm::vec3& Second = Diamond[(i + 1) % BOUNDARY_VERTS];
+		const glm::vec3& First = Diamond[i].position;
+		const glm::vec3& Second = Diamond[(i + 1) % BOUNDARY_VERTS].position;
 
 		glm::vec3 Wall = Second - First;
 		glm::vec3 Normal = VectorCounterClockwiseRot(Wall.x, Wall.y); //Create a function for rotating nrmls
@@ -288,17 +288,8 @@ void MeGLWindow::HandleBoundaries()
 		//finding the dot product of the normal and respective shap location
 		float DotResult = glm::dot(RespectiveShipLocation, Normal);
 
-		if (Collisions = Collisions || (DotResult < 0))
-		{
-			velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-			cout << "Hit!" << endl;
-		}
-		else
-		{
-			srand(time(NULL));
-			velocity = glm::vec3(randComponent(), randComponent(), +0.0f);
-			cout << "Moving!" << endl;
-		}
+		//Collisions = Collisions || (DotResult < 0);
+		cout << DotResult << endl;
 	}
 }
 
