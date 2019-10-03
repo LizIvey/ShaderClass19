@@ -311,7 +311,7 @@ void MeGLWindow::HandleBoundaries()
 	else if (Collisions = Collisions || (Dot2 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
 	else if (Collisions = Collisions || (Dot3 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
 	else if (Collisions = Collisions || (Dot4 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
-	cout << Collisions << endl;
+	cout << Collisions << endl; 
 
 	/*if (Collisions = Collisions || (Dot2 < 0))
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
