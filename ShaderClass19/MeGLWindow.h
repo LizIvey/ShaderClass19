@@ -1,9 +1,7 @@
 #ifndef ME_GL_WINDOW
 #define ME_GL_WINDOW
 #include <QtOpenGL\qglwidget>
-#include <Qt\qtimer.h>
-
-//namespace Math { struct Vector2D{}; }
+#include <Qt\qtimer.h>s
 
 class MeGLWindow : public QGLWidget
 {

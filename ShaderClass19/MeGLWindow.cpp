@@ -8,24 +8,13 @@
 #include <stdlib.h>
 #include <ctime>
 #include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\normal.hpp>
+#include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\transform.hpp>
 
 using namespace std;
 
 GLuint MyShaders;
 int debugCount = 0;
 glm::vec3 velocity;
-/*
-Assignment #3:
-
-	1- Show a diamond that is our playing field. Make it take up the entire area. -> DONE!
-
-	2- One shape, you choose, make it cool looking. No more triangle shape. -> DONE!
-
-	3- Give the shape a random velocity...something reasonable -> DONE!
-
-	4- Add a QTimer to get an automatic update function. See my Game Engine playlist on how to do this. -> DONE!
-
-	5- Update your shape position every frame. -> DONE! */
 
 struct Vertex
 {
@@ -210,6 +199,7 @@ int randSign()
 {
 	return rand() % 2 == 0 ? 1 : -1;
 }
+
 float randComponent()
 {
 	return rand() % 100 * 0.00001 * randSign();
@@ -273,17 +263,43 @@ void  MeGLWindow::BallUpdate()
 	repaint();
 }
 
+glm::vec3 VectorClockwiseRot(float x, float y)
+{
+	return glm::vec3(y, -x, 0.0f);
+}
+
+glm::vec3 VectorCounterClockwiseRot(float x, float y)
+{
+	return glm::vec3(-y, x, 0.0f);
+}
+
 void MeGLWindow::HandleBoundaries()
 {
-	const glm::vec3& First = Diamond[0];
-	const glm::vec3& Second = Diamond[1];
+	bool Collisions = false;
+	for (uint i = 0; i < BOUNDARY_VERTS; i++)
+	{
+		const glm::vec3& First = Diamond[i];
+		const glm::vec3& Second = Diamond[(i + 1) % BOUNDARY_VERTS];
 
-	glm::vec3 Wall = Second - First;
-	glm::vec3 Normal;
-	glm::vec3 RespectiveShipLocation = Pos_1 - First;
+		glm::vec3 Wall = Second - First;
+		glm::vec3 Normal = VectorCounterClockwiseRot(Wall.x, Wall.y); //Create a function for rotating nrmls
+		glm::vec3 RespectiveShipLocation = Pos_1 - First;
 
-	//finding the dot product of the normal and respective shap location
-	float DotResult = glm::dot(Normal, RespectiveShipLocation);
+		//finding the dot product of the normal and respective shap location
+		float DotResult = glm::dot(RespectiveShipLocation, Normal);
+
+		if (Collisions = Collisions || (DotResult < 0))
+		{
+			velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+			cout << "Hit!" << endl;
+		}
+		else
+		{
+			srand(time(NULL));
+			velocity = glm::vec3(randComponent(), randComponent(), +0.0f);
+			cout << "Moving!" << endl;
+		}
+	}
 }
 
 MeGLWindow::~MeGLWindow()
