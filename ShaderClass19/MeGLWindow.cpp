@@ -276,7 +276,34 @@ glm::vec3 VectorCounterClockwiseRot(float x, float y)
 void MeGLWindow::HandleBoundaries()
 {
 	bool Collisions = false;
-	for (uint i = 0; i < BOUNDARY_VERTS; i++)
+
+	glm::vec3 A = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 B = glm::vec3(1.0f, 0.0f, 0.0f);
+	glm::vec3 C = glm::vec3(0.0f, -1.0f, 0.0f);
+	glm::vec3 D = glm::vec3(-1.0, 0.0f, 0.0f);
+
+	glm::vec3 Wall_1 = A - B;
+	glm::vec3 Wall_2 = B - C;
+	glm::vec3 Wall_3 = C - D;
+	glm::vec3 Wall_4 = D - A;
+
+	glm::vec3 Normal_1 = VectorCounterClockwiseRot(Wall_1.x, Wall_1.y); 
+	glm::vec3 Normal_2 = VectorCounterClockwiseRot(Wall_2.x, Wall_2.y); 
+	glm::vec3 Normal_3 = VectorCounterClockwiseRot(Wall_3.x, Wall_3.y); 
+	glm::vec3 Normal_4 = VectorCounterClockwiseRot(Wall_4.x, Wall_4.y); 
+
+	glm::vec3 CurrPos = Pos_1 - A;
+
+	float Dot = glm::dot(CurrPos, Normal_1);
+	cout << "Rawr"<< Dot << endl;
+
+	if (Collisions || Dot > 0)
+	{
+		Collisions = true;
+		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+	}
+
+	/*for (uint i = 0; i < BOUNDARY_VERTS; i++)
 	{
 		const glm::vec3& First = Diamond[i].position;
 		const glm::vec3& Second = Diamond[(i + 1) % BOUNDARY_VERTS].position;
@@ -290,7 +317,7 @@ void MeGLWindow::HandleBoundaries()
 
 		//Collisions = Collisions || (DotResult < 0);
 		cout << DotResult << endl;
-	}
+	}*/
 }
 
 MeGLWindow::~MeGLWindow()
