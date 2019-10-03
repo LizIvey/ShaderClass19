@@ -212,7 +212,6 @@ void MeGLWindow::initializeGL()
 	glewInit();
 	//sendDataToOpenGL();
 	installShaders();
-	HandleBoundaries();
 
 	//random seed for moving the shape
 	srand(time(NULL));
@@ -259,7 +258,7 @@ void MeGLWindow::paintGL()
 	DrawBALL();
 	glDrawElements(GL_POLYGON, 6, GL_UNSIGNED_SHORT, 0);
 
-	HandleBoundaries();
+	ShapeCollisions();
 }
 
 void  MeGLWindow::BallUpdate()
@@ -278,7 +277,7 @@ glm::vec3 VectorCounterClockwiseRot(float x, float y)
 	return glm::vec3(-y, x, 0.0f);
 }
 
-void MeGLWindow::HandleBoundaries()
+void MeGLWindow::ShapeCollisions()
 {
 	/*glm::vec3 A = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 B = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -313,33 +312,21 @@ void MeGLWindow::HandleBoundaries()
 	else if (Collisions = Collisions || (Dot4 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
 	cout << Collisions << endl; */
 
-	/*if (Collisions = Collisions || (Dot2 < 0))
-		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	//cout << Collisions << endl;
-
-	if (Collisions = Collisions || (Dot3 < 0))
-		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	//cout << Collisions << endl;
-
-	if (Collisions = Collisions || (Dot4 < 0))
-		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	//cout << Collisions << endl;*/
-
 	for (uint i = 0; i < BOUNDARY_VERTS; i++)
 	{
 		const glm::vec3& First = Diamond[i].position;
 		const glm::vec3& Second = Diamond[(i + 1) % BOUNDARY_VERTS].position;
 
 		glm::vec3 Wall = First - Second;
-		glm::vec3 Normal = VectorCounterClockwiseRot(Wall.x, Wall.y); //Create a function for rotating nrmls
-		glm::vec3 RespectiveShipLocation = Pos_1 - First;
+		glm::vec3 Nrml = VectorCounterClockwiseRot(Wall.x, Wall.y); //function rotates the nrml
+		glm::vec3 CurrPos = Pos_1 - First;
 
 		//finding the dot product of the normal and respective shap location
-		float DotResult = glm::dot(RespectiveShipLocation, Normal);
+		float Dot = glm::dot(CurrPos, Nrml);
 
-		if (Collisions = Collisions || (DotResult < 0))
+		if (Collisions || (Dot < 0))
 			velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-		cout << Collisions << endl;
+		//cout << Collisions << endl;
 	}
 }
 

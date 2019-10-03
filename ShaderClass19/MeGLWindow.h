@@ -14,7 +14,7 @@ class MeGLWindow : public QGLWidget
 	//void DrawBall(float x, float y, float r, int LineSeg);
 	void DrawDiamond();
 	QTimer timer;
-	void HandleBoundaries();
+	void ShapeCollisions();
 
 protected:
 	void initializeGL();
