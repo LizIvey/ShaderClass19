@@ -16,6 +16,8 @@ GLuint MyShaders;
 int debugCount = 0;
 glm::vec3 velocity;
 
+bool Collisions = false;
+
 struct Vertex
 {
 	glm::vec3 position;
@@ -210,6 +212,7 @@ void MeGLWindow::initializeGL()
 	glewInit();
 	//sendDataToOpenGL();
 	installShaders();
+	HandleBoundaries();
 
 	//random seed for moving the shape
 	srand(time(NULL));
@@ -255,6 +258,8 @@ void MeGLWindow::paintGL()
 	//DrawBall(glm::vec2(0.0f, 0.0f), 0.1f, 20);
 	DrawBALL();
 	glDrawElements(GL_POLYGON, 6, GL_UNSIGNED_SHORT, 0);
+
+	HandleBoundaries();
 }
 
 void  MeGLWindow::BallUpdate()
@@ -275,33 +280,50 @@ glm::vec3 VectorCounterClockwiseRot(float x, float y)
 
 void MeGLWindow::HandleBoundaries()
 {
-	bool Collisions = false;
-
 	glm::vec3 A = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::vec3 B = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 C = glm::vec3(0.0f, -1.0f, 0.0f);
 	glm::vec3 D = glm::vec3(-1.0, 0.0f, 0.0f);
 
-	glm::vec3 Wall_1 = A - B;
-	glm::vec3 Wall_2 = B - C;
-	glm::vec3 Wall_3 = C - D;
-	glm::vec3 Wall_4 = D - A;
+	glm::vec3 Wall1 = A - B;
+	glm::vec3 Wall2 = B - C;
+	glm::vec3 Wall3 = C - D;
+	glm::vec3 Wall4 = D - A;
 
-	glm::vec3 Normal_1 = VectorCounterClockwiseRot(Wall_1.x, Wall_1.y); 
-	glm::vec3 Normal_2 = VectorCounterClockwiseRot(Wall_2.x, Wall_2.y); 
-	glm::vec3 Normal_3 = VectorCounterClockwiseRot(Wall_3.x, Wall_3.y); 
-	glm::vec3 Normal_4 = VectorCounterClockwiseRot(Wall_4.x, Wall_4.y); 
+	glm::vec3 Nrml1 = VectorCounterClockwiseRot(Wall1.x, Wall1.y);
+	glm::vec3 Nrml2 = VectorCounterClockwiseRot(Wall2.x, Wall2.y);
+	glm::vec3 Nrml3 = VectorCounterClockwiseRot(Wall3.x, Wall3.y);
+	glm::vec3 Nrml4 = VectorCounterClockwiseRot(Wall4.x, Wall4.y);
+	
+	glm::vec3 CurrPos1 = Pos_1 - A;
+	glm::vec3 CurrPos2 = Pos_1 - B;
+	glm::vec3 CurrPos3 = Pos_1 - C;
+	glm::vec3 CurrPos4 = Pos_1 - D;
 
-	glm::vec3 CurrPos = Pos_1 - A;
+	float Dot1 = glm::dot(CurrPos1, Nrml1);
+	float Dot2 = glm::dot(CurrPos2, Nrml2);
+	float Dot3 = glm::dot(CurrPos3, Nrml3);
+	float Dot4 = glm::dot(CurrPos4, Nrml4);
+	//cout << Dot2 << endl;
 
-	float Dot = glm::dot(CurrPos, Normal_1);
-	cout << "Rawr"<< Dot << endl;
+	
+	if (Collisions = Collisions || (Dot1 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
+	else if (Collisions = Collisions || (Dot2 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
+	else if (Collisions = Collisions || (Dot3 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
+	else if (Collisions = Collisions || (Dot4 < 0)) { velocity = glm::vec3(0.0f, 0.0f, 0.0f); }
+	cout << Collisions << endl;
 
-	if (Collisions || Dot > 0)
-	{
-		Collisions = true;
+	/*if (Collisions = Collisions || (Dot2 < 0))
 		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	}
+	//cout << Collisions << endl;
+
+	if (Collisions = Collisions || (Dot3 < 0))
+		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+	//cout << Collisions << endl;
+
+	if (Collisions = Collisions || (Dot4 < 0))
+		velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+	//cout << Collisions << endl;*/
 
 	/*for (uint i = 0; i < BOUNDARY_VERTS; i++)
 	{
