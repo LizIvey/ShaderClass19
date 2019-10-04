@@ -321,7 +321,7 @@ void MeGLWindow::ShapeCollisions()
 		glm::vec3 Nrml = VectorCounterClockwiseRot(Wall.x, Wall.y); //function rotates the nrml
 		glm::vec3 CurrPos = Pos_1 - First;
 
-		//finding the dot product of the normal and respective shap location
+		//finding the dot product of the normal and shapes current position
 		float Dot = glm::dot(CurrPos, Nrml);
 
 		if (Collisions || (Dot < 0))
