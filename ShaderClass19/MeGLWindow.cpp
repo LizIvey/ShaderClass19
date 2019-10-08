@@ -70,6 +70,7 @@ namespace
 	glm::vec3 transformedPoints[NUM_VERTS];
 	glm::vec3 Pos_1(0.0f, 0.0f, 0.0f);
 	glm::vec3 Pos_2(0.0f, 0.0f, 0.0f);
+	glm::vec3 OldShapePostion;
 }
 
 void MeGLWindow::DrawDiamond()
@@ -105,22 +106,6 @@ void DrawBALL()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_DYNAMIC_DRAW);
 }
-
-/*void DrawBall(glm::vec2 CirclePos, float r, int LineSeg)
-{
-	glBegin(GL_TRIANGLE_FAN); 
-	for (int i = 0; i < 30; i++)
-	{
-		float PI = 3.1415926f;
-		float theta = 2.0f * PI * float(i) / float(LineSeg); //get the current
-
-		float XX = 0.1 * cos(theta); //calculate x
-		float YY = 0.1 * sin(theta); //calulate y
-
-		glVertex2f(XX + CirclePos.x, YY + CirclePos.y); //output verts
-	}
-	glEnd(); 
-}*/
 
 bool checkStatus(GLuint objectID,
 	PFNGLGETSHADERIVPROC objectPropertyGetterFunc,
@@ -259,13 +244,13 @@ void MeGLWindow::paintGL()
 	//DrawBall(glm::vec2(0.0f, 0.0f), 0.1f, 20);
 	DrawBALL();
 	glDrawElements(GL_POLYGON, 6, GL_UNSIGNED_SHORT, 0);
-
-	ShapeCollisions();
 }
 
 void  MeGLWindow::BallUpdate()
 {
+	OldShapePostion = Pos_1;
 	Pos_1 = Pos_1 + velocity;
+	ShapeCollisions();
 	repaint();
 }
 
