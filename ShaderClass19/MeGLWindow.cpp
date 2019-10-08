@@ -282,7 +282,10 @@ void MeGLWindow::ShapeCollisions()
 		float DotVelocity = glm::dot(velocity, Normalized_Nrmls);
 
 		if (Collisions || (Dot < 0))
+		{
 			velocity = velocity - 2 * DotVelocity * Normalized_Nrmls;
+			Pos_1 = OldShapePostion;
+		}
 			//velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 		//cout << Collisions << endl;
 	}
