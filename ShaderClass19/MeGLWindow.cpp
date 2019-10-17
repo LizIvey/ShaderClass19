@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <glm.hpp>
-#include <QtGui\qkeyevent>
+//#include <QtGui\qkeyevent>
 #include <math.h>
 #include <stdlib.h>
 #include <ctime>
