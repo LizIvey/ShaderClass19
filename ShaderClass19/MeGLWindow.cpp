@@ -15,7 +15,6 @@
 using namespace std;
 
 GLuint MyShaders;
-int debugCount = 0;
 glm::vec3 velocity;
 
 bool Collisions = false;
@@ -197,7 +196,6 @@ float randComponent()
 void MeGLWindow::initializeGL()
 {
 	glewInit();
-	//sendDataToOpenGL();
 	installShaders();
 
 	//random seed for moving the shape
@@ -236,12 +234,11 @@ void MeGLWindow::paintGL()
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(translatedVerts), translatedVerts);
 	glEnableVertexAttribArray(0);
 
-	//Step 2: I am going to draw a circle @ the origin
+	//drawing a shape @ the origin
 	UniformColor.g = 0;
 	UniformColor.r = 1;
 	glUniform3fv(UniformPositionLoc, 1, &TriPos[0]);
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
-	//DrawBall(glm::vec2(0.0f, 0.0f), 0.1f, 20);
 	DrawBALL();
 	glDrawElements(GL_POLYGON, 6, GL_UNSIGNED_SHORT, 0);
 }
@@ -249,7 +246,7 @@ void MeGLWindow::paintGL()
 void  MeGLWindow::BallUpdate()
 {
 	OldShapePostion = Pos_1;
-	Pos_1 = Pos_1 + velocity;
+	Pos_1 += velocity;
 	ShapeCollisions();
 	repaint();
 }
@@ -281,13 +278,11 @@ void MeGLWindow::ShapeCollisions()
 		float Dot = glm::dot(CurrPos, Nrml);
 		float DotVelocity = glm::dot(velocity, Normalized_Nrmls);
 
-		if (Collisions || (Dot < 0))
+		if (Dot < 0)
 		{
 			velocity = velocity - 2 * DotVelocity * Normalized_Nrmls;
 			Pos_1 = OldShapePostion;
 		}
-			//velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-		//cout << Collisions << endl;
 	}
 }
 
