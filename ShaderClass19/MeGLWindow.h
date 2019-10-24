@@ -8,7 +8,7 @@ class MeGLWindow : public QGLWidget
 	bool checkProgramStatus(GLuint programID);
 	std::string readShaderCode(const char* filename);
 	void installShaders();
-	void DrawDiamond();
+	void DrawCube();
 
 protected:
 	void initializeGL();

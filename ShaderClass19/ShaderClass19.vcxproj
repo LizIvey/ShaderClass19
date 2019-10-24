@@ -165,13 +165,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MeGLWindow.cpp" />
-    <ClCompile Include="MyGLWindow_moc.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderClass19.cpp" />
+    <ClCompile Include="ShapeGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Middleware\glm\glm\gtx\normal.hpp" />
     <ClInclude Include="MeGLWindow.h" />
+    <ClInclude Include="ShapeData.h" />
+    <ClInclude Include="ShapeGenerator.h" />
+    <ClInclude Include="TeapotData.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FragmentShader.glsl" />

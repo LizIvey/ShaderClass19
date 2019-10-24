@@ -9,7 +9,6 @@
 using glm::vec3;
 using glm::mat4;
 using glm::mat3;
-
 #define NUM_ARRAY_ELEMENTS(a) sizeof(a) / sizeof(*a)
 
 glm::vec3 randomColor()
