@@ -3,21 +3,16 @@
 #include <iostream>
 #include <fstream>
 #include <glm.hpp>
-//#include <QtGui\qkeyevent>
 #include <math.h>
 #include <stdlib.h>
-#include <ctime>
 #include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\normal.hpp>
 #include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\transform.hpp>
 
-/*shape bouncing off of the boundaries and reposition shape, so there is no fighting with boundary collision*/
+/*rotating cube hmwk!*/
 
 using namespace std;
 
 GLuint MyShaders;
-glm::vec3 velocity;
-
-bool Collisions = false;
 
 struct Vertex
 {
@@ -183,28 +178,10 @@ void MeGLWindow::installShaders()
 	glUseProgram(MyShaders);
 }
 
-int randSign()
-{
-	return rand() % 2 == 0 ? 1 : -1;
-}
-
-float randComponent()
-{
-	return rand() % 100 * 0.00001 * randSign();
-}
-
 void MeGLWindow::initializeGL()
 {
 	glewInit();
 	installShaders();
-
-	//random seed for moving the shape
-	srand(time(NULL));
-	velocity = glm::vec3(randComponent(), randComponent(), +0.0f);
-
-	//setting up Qt Timer
-	connect(&timer, SIGNAL(timeout()), this, SLOT(BallUpdate()));
-	timer.start(0);
 }
 
 void MeGLWindow::paintGL()
@@ -241,49 +218,6 @@ void MeGLWindow::paintGL()
 	glUniform3fv(UniformColorLoc, 1, &UniformColor[0]);
 	DrawBALL();
 	glDrawElements(GL_POLYGON, 6, GL_UNSIGNED_SHORT, 0);
-}
-
-void  MeGLWindow::BallUpdate()
-{
-	OldShapePostion = Pos_1;
-	Pos_1 += velocity;
-	ShapeCollisions();
-	repaint();
-}
-
-glm::vec3 VectorClockwiseRot(float x, float y)
-{
-	return glm::vec3(y, -x, 0.0f);
-}
-
-glm::vec3 VectorCounterClockwiseRot(float x, float y)
-{
-	return glm::vec3(-y, x, 0.0f);
-}
-
-void MeGLWindow::ShapeCollisions()
-{
-	for (uint i = 0; i < BOUNDARY_VERTS; i++)
-	{
-		const glm::vec3& First = Diamond[i].position;
-		const glm::vec3& Second = Diamond[(i + 1) % BOUNDARY_VERTS].position;
-
-		glm::vec3 Wall = First - Second;
-		glm::vec3 Nrml = VectorCounterClockwiseRot(Wall.x, Wall.y); //function rotates the nrml
-		glm::vec3 Normalized_Nrmls = glm::normalize(Nrml); //normalizing the normals....giving it a length of 1...only care about its magnitude
-
-		glm::vec3 CurrPos = Pos_1 - First;
-
-		//finding the dot product of the normal and shapes current position
-		float Dot = glm::dot(CurrPos, Nrml);
-		float DotVelocity = glm::dot(velocity, Normalized_Nrmls);
-
-		if (Dot < 0)
-		{
-			velocity = velocity - 2 * DotVelocity * Normalized_Nrmls;
-			Pos_1 = OldShapePostion;
-		}
-	}
 }
 
 MeGLWindow::~MeGLWindow()
