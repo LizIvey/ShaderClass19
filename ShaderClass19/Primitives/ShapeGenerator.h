@@ -1,5 +1,5 @@
 #pragma once
-#include <ShapeData.h>
+#include <Primitives\ShapeData.h>
 typedef unsigned int uint;
 
 class ShapeGenerator

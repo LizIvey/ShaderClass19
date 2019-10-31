@@ -1,7 +1,7 @@
 #include "ShapeGenerator.h"
 #include <glm.hpp>
 #include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\transform.hpp>
-#include <Vertex.h>
+#include <Primitives\Vertex.h>
 #define PI 3.14159265359
 using glm::vec3;
 using glm::mat4;

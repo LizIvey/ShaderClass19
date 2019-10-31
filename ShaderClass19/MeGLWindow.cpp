@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\normal.hpp>
 #include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\transform.hpp>
-#include <ShapeData.h>
-#include <ShapeGenerator.h>
+#include <Primitives/ShapeData.h>
+#include <Primitives/ShapeGenerator.h>
 
 /*rotating cube hmwk!*/
 

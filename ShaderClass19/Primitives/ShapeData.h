@@ -1,6 +1,6 @@
 #pragma once
 #include <GL\glew.h>
-#include <Vertex.h>
+#include <Primitives\Vertex.h>
 
 struct ShapeData
 {
