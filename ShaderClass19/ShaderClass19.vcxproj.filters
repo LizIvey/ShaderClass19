@@ -35,16 +35,16 @@
     <ClInclude Include="..\Middleware\glm\glm\gtx\normal.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShapeData.h">
+    <ClInclude Include="TeapotData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TeapotData.h">
+    <ClInclude Include="ShapeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShapeGenerator.h">
+    <ClInclude Include="ShapeData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

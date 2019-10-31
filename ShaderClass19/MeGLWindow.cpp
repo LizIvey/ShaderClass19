@@ -141,11 +141,10 @@ void MeGLWindow::paintGL()
 
 	mat4 FullTransformationMat = ProjectionMatrix * TranslationMat * RotationMat;
 
+	//draw cube
 	//feeding the ModelTransformMatrix & ProjectionTransformMatrix into the vertex shader
 	GLint FullTransformMatUnitformLoc = glGetUniformLocation(MyShaders, "FullTransformMatrix");
-
 	glUniformMatrix4fv(FullTransformMatUnitformLoc, 1, GL_FALSE, &FullTransformationMat[0][0]);
-
 	glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_SHORT, 0);
 }
 
