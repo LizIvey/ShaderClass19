@@ -135,15 +135,16 @@ void MeGLWindow::paintGL()
 	glViewport(0, 0, width(), height());
 
 	//creating & initlizing the ProjectionMatrix & the ModelTransformMatrix
-	mat4 ModelTranformMatrix = glm::translate(mat4(), vec3(0.0f, 0.0f, -3.0f));
-	mat4 ProjectionTransformMatrix = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 10.0f);
+	mat4 TranslationMat = glm::translate(mat4(), vec3(0.0f, 0.0f, -3.0f));
+	mat4 RotationMat = glm::rotate(mat4(), 54.0f, vec3(1.0f, 0.0f, 0.0f));
+	mat4 ProjectionMatrix = glm::perspective(60.0f, ((float)width()) / height(), 0.1f, 10.0f);
+
+	mat4 FullTransformationMat = ProjectionMatrix * TranslationMat * RotationMat;
 
 	//feeding the ModelTransformMatrix & ProjectionTransformMatrix into the vertex shader
-	GLint ModelTransformMatUniformLocation = glGetUniformLocation(MyShaders, "ModelTransformMatrix");
-	GLint ProjectionTransformMatUniformLocation = glGetUniformLocation(MyShaders, "ProjectionTransformMatrix");
+	GLint FullTransformMatUnitformLoc = glGetUniformLocation(MyShaders, "FullTransformMatrix");
 
-	glUniformMatrix4fv(ModelTransformMatUniformLocation, 1, GL_FALSE, &ModelTranformMatrix[0][0]);
-	glUniformMatrix4fv(ProjectionTransformMatUniformLocation, 1, GL_FALSE, &ProjectionTransformMatrix[0][0]);
+	glUniformMatrix4fv(FullTransformMatUnitformLoc, 1, GL_FALSE, &FullTransformationMat[0][0]);
 
 	glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_SHORT, 0);
 }
