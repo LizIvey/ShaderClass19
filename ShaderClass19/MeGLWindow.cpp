@@ -4,6 +4,10 @@
 #include <fstream>
 #include <glm.hpp>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#include <QtGui\qkeyevent>
+>>>>>>> parent of ebe0601... rawr
 =======
 #include <QtGui\qkeyevent>
 >>>>>>> parent of ebe0601... rawr
