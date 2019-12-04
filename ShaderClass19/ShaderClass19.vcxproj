@@ -165,7 +165,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MeGLWindow.cpp" />
-    <ClCompile Include="MyGLWindow_moc.cpp" />
+    <ClCompile Include="Primitives\ShapeGenerator.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderClass19.cpp" />
   </ItemGroup>
