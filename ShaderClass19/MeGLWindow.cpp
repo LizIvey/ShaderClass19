@@ -3,6 +3,10 @@
 #include <iostream>
 #include <fstream>
 #include <glm.hpp>
+<<<<<<< HEAD
+=======
+#include <QtGui\qkeyevent>
+>>>>>>> parent of ebe0601... rawr
 #include <math.h>
 #include <stdlib.h>
 #include <C:\Users\krazi\Desktop\Tech Art III\ShaderClass19\Middleware\glm\glm\gtx\normal.hpp>
